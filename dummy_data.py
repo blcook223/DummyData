@@ -7,6 +7,10 @@ from sublime_plugin import TextCommand
 from DummyData import functions
 
 
+class DDException(Exception):
+    pass
+
+
 class DummyDataCommand(TextCommand):
 
     def run(self, edit):
@@ -14,48 +18,69 @@ class DummyDataCommand(TextCommand):
         Generate new JSON file based on template.
         """
 
+        def evaluate_json(json, allow_function=False):
+            """
+            Traverse parsed JSON data and evaluate tags.
+            """
+
+            def call_function(match):
+                """
+                Call matched function.
+                """
+                args = argPattern.findall(match.group('args'))
+                return getattr(functions, match.group('function'))(*args)
+
+            def evaluate_object(json):
+                """
+                Evaluate tags in parsed JSON object.
+                """
+                for k in json:
+                    match = tagPattern.search(k)
+                    if match:
+                        newKey = call_function(match)
+                        json[newKey] = evaluate_json(json.pop(k))
+                    else:
+                        json[k] = evaluate_json(json[k])
+                return json
+
+            def evaluate_array(json):
+                """
+                Evaluate tags in parsed JSON array.
+                """
+                if json:
+                    first_item = evaluate_json(json[0], True)
+                    if hasattr(first_item, '__call__'):
+                        return first_item(json[1:], evaluate_json)
+                    for i, val in enumerate(json):
+                        json[i] = evaluate_json(val)
+                return json
+
+            if type(json) is dict:
+                return evaluate_object(json)
+            elif type(json) is list:
+                return evaluate_array(json)
+            elif type(json) is str:
+                match = tagPattern.search(json)
+                if match:
+                    json = call_function(match)
+                    if (hasattr(json, '__call__') and not allow_function):
+                        raise DDException('TODO: improve all messages')
+            return json
+
         tagPattern = compile(r"""
-            ^\{%\s*(?P<function>\b\w+\b)(?P<args>(?:\s*\S+)*)?\s*%\}$
+            ^\{% \s* (?P<function> \b\w+\b) (?P<args> (?: \s*\S+ )* )? \s* %\}$
         """, VERBOSE)
         argPattern = compile(r"""
             -? (?= [1-9]|0(?!\d) ) \d+ (?:\.\d+)? (?:[eE] [+-]? \d+)?
         """, VERBOSE)
 
-        def function(match):
-            """
-            Call function in the parameter regex match.
-            """
-            args = argPattern.findall(match.group('args'))
-            return getattr(functions, match.group('function'))(*args)
-
-        def traverse(parsed):
-            """
-            Traverse parsed JSON data and evaluate functions.
-            """
-            if type(parsed) is dict:
-                for k in parsed:
-                    match = tagPattern.search(k)
-                    if match:
-                        newKey = function(match)
-                        parsed[newKey] = traverse(parsed.pop(k))
-                    else:
-                        parsed[k] = traverse(parsed[k])
-            elif type(parsed) is list:
-                for i, val in enumerate(parsed):
-                    parsed[i] = traverse(val)
-            elif type(parsed) is str:
-                match = tagPattern.search(parsed)
-                if match:
-                    return function(match)
-            return parsed
-
-        evaluated = traverse(
+        data = evaluate_json(
             loads(self.view.substr(Region(0, self.view.size())))
         )
         f = active_window().new_file()
         f.set_scratch(True)
         f.set_name('results.json')
-        f.insert(edit, 0, dumps(evaluated, indent=4, separators=(',', ': ')))
+        f.insert(edit, 0, dumps(data, indent=4, separators=(',', ': ')))
 
 
 

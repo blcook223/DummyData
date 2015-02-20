@@ -1,5 +1,8 @@
+from abc import ABCMeta, abstractmethod
+
 from random import randint, getrandbits, uniform, choice
 
+from DummyData.dummy_data import DDException
 from DummyData.constants import (
     CITIES,
     STATES,
@@ -11,7 +14,7 @@ from DummyData.constants import (
 )
 
 
-class DummyDataException(Exception):
+class FunctionException(DDException):
     pass
 
 
@@ -21,7 +24,7 @@ def integer(*args):
     """
     length = len(args)
     if length != 0 and length != 2:
-        raise DummyDataException(
+        raise DDFunctionException(
             'integer function does not except %s args' % length
         )
     if args:
@@ -35,7 +38,7 @@ def number(*args):
     """
     length = len(args)
     if length != 0 and length != 2:
-        raise DummyDataException(
+        raise DDFunctionException(
             'number function does not except %s args' % length
         )
     if args:
@@ -48,7 +51,7 @@ def boolean(*args):
     Return random boolean.
     """
     if args:
-        raise DummyDataException('boolean function does not accept args')
+        raise DDFunctionException('boolean function does not accept args')
     return bool(getrandbits(1))
 
 
@@ -57,7 +60,7 @@ def postal(*args):
     Return a random postal code.
     """
     if args:
-        raise DummyDataException('postal function does not accept args')
+        raise DDFunctionException('postal function does not accept args')
     return str(integer(10000, 99999))
 
 
@@ -66,7 +69,7 @@ def phone(*args):
     Return a random phone number.
     """
     if args:
-        raise DummyDataException('phone function does not accept args')
+        raise DDFunctionException('phone function does not accept args')
     return ''.join(
         [
             '(', str(integer(100, 999)), ') ',
@@ -80,7 +83,7 @@ def paragraph(*args):
     Return a paragraph of text.
     """
     if args:
-        raise DummyDataException('paragraph function does not accept args')
+        raise DDFunctionException('paragraph function does not accept args')
     return (
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do '
         'eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim '
@@ -97,7 +100,7 @@ def sentence(*args):
     Return a paragraph of text.
     """
     if args:
-        raise DummyDataException('sentence function does not accept args')
+        raise DDFunctionException('sentence function does not accept args')
     return (
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do '
         'eiusmod tempor incididunt ut labore et dolore magna aliqua.'
@@ -109,7 +112,7 @@ def city(*args):
     Return a random city.
     """
     if args:
-        raise DummyDataException('city function does not accept args')
+        raise DDFunctionException('city function does not accept args')
     return choice(CITIES)
 
 
@@ -118,7 +121,7 @@ def state(*args):
     Return a random state.
     """
     if args:
-        raise DummyDataException('state function does not accept args')
+        raise DDFunctionException('state function does not accept args')
     return choice(STATES)
 
 
@@ -127,7 +130,7 @@ def street(*args):
     Return a random street name.
     """
     if args:
-        raise DummyDataException('street function does not accept args')
+        raise DDFunctionException('street function does not accept args')
     return choice(STREETS)
 
 
@@ -136,7 +139,7 @@ def country(*args):
     Return a random country name.
     """
     if args:
-        raise DummyDataException('country function does not accept args')
+        raise DDFunctionException('country function does not accept args')
     return choice(COUNTRIES)
 
 
@@ -145,7 +148,7 @@ def company(*args):
     Return a random company name.
     """
     if args:
-        raise DummyDataException('company function does not accept args')
+        raise DDFunctionException('company function does not accept args')
     return choice(COMPANIES)
 
 
@@ -154,7 +157,7 @@ def url(*args):
     Return a random URL.
     """
     if args:
-        raise DummyDataException('url function does not accept args')
+        raise DDFunctionException('url function does not accept args')
     return ''.join(['http://www.', company().lower(), '.com/'])
 
 
@@ -163,7 +166,7 @@ def first_name(*args):
     Return a random first name.
     """
     if args:
-        raise DummyDataException('first_name function does not accept args')
+        raise DDFunctionException('first_name function does not accept args')
     return choice(FIRST_NAMES)
 
 
@@ -172,7 +175,7 @@ def last_name(*args):
     Return a random last name.
     """
     if args:
-        raise DummyDataException('last_name function does not accept args')
+        raise DDFunctionException('last_name function does not accept args')
     return choice(LAST_NAMES)
 
 
@@ -181,7 +184,7 @@ def email(*args):
     Return a random email address.
     """
     if args:
-        raise DummyDataException('last_name function does not accept args')
+        raise DDFunctionException('last_name function does not accept args')
     return ''.join(
         [
             first_name().lower(), '.', last_name().lower(),
@@ -190,15 +193,51 @@ def email(*args):
     )
 
 
+def random(*args):
+    """
+    Return a function that will choose from list items.
+    """
+    if args:
+        raise DDFunctionException('random function does not accept args')
+
+    def evaluate_random(array, evaluator):
+        """
+        Choose from among items in the array.
+        """
+        return evaluator(choice(array))
+
+    return evaluate_random
+
+
+def repeat(*args):
+    """
+    Return a function that will repeat a list.
+    """
+    length = len(args)
+    if length != 1:
+        raise DDFunctionException(
+            'repeat function requires 1 argument'
+        )
+
+    def evaluate_repeat(array, evaluator):
+        """
+        Repeat the array the given number of times.
+        """
+        return_array = []
+        for x in range(0, int(args[0])):
+            for item in array:
+                return_array.append(evaluator(item))
+        return return_array
+
+    return evaluate_repeat
+
+
+
+
 
 # TODO: implement these
-
-# repeat
 # index
-# random
-
 
 # TODO: implement these with and without args
-
 # date
 # time
