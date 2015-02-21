@@ -1,4 +1,4 @@
-from re import compile, VERBOSE
+from re import compile, VERBOSE, sub
 from json import loads, dumps
 
 from sublime import Region, active_window
@@ -27,51 +27,70 @@ class DummyDataCommand(TextCommand):
                 """
                 Call matched function.
                 """
-                args = argPattern.findall(match.group('args'))
-                return getattr(functions, match.group('function'))(*args)
+                args = arg_pattern.findall(match.group('args'))
+                value = getattr(functions, match.group('function'))(*args)
+                if hasattr(json, '__call__') and not allow_function:
+                    raise DDException(
+                        'function %s called from illegal location'
+                        % match.group('function')
+                    )
+                if match.start() != 0 or match.end() != len(match.string):
+                    value = str(value)
+                return value
 
             def evaluate_object(json):
                 """
                 Evaluate tags in parsed JSON object.
                 """
+                evaluated = {}
                 for k in json:
-                    match = tagPattern.search(k)
+                    match = tag_pattern.search(k)
                     if match:
-                        newKey = call_function(match)
-                        json[newKey] = evaluate_json(json.pop(k))
+                        evaluated[call_function(match)] = evaluate_json(json.pop(k))
                     else:
-                        json[k] = evaluate_json(json[k])
-                return json
+                        evaluated[k] = evaluate_json(json[k])
+                return evaluated
 
             def evaluate_array(json):
                 """
                 Evaluate tags in parsed JSON array.
                 """
+                evaluated = []
                 if json:
-                    first_item = evaluate_json(json[0], True)
-                    if hasattr(first_item, '__call__'):
-                        return first_item(json[1:], evaluate_json)
-                    for i, val in enumerate(json):
-                        json[i] = evaluate_json(val)
-                return json
+                    evaluated.append(evaluate_json(json[0], True))
+                    if hasattr(evaluated[0], '__call__'):
+                        return evaluated[0](json[1:], evaluate_json)
+                    for val in json[1:]:
+                        evaluated.append(evaluate_json(val))
+                return evaluated
 
             if type(json) is dict:
-                return evaluate_object(json)
+                evaluated = evaluate_object(json)
             elif type(json) is list:
-                return evaluate_array(json)
+                evaluated = evaluate_array(json)
             elif type(json) is str:
-                match = tagPattern.search(json)
-                if match:
-                    json = call_function(match)
-                    if (hasattr(json, '__call__') and not allow_function):
-                        raise DDException('TODO: improve all messages')
-            return json
+                try:
+                    evaluated = sub(tag_pattern, call_function, json)
+                except TypeError:
+                    # function returned a type other than string
+                    match = tag_pattern.search(json)
+                    if match:
+                        evaluated = call_function(match)
+            return evaluated
 
-        tagPattern = compile(r"""
-            ^\{% \s* (?P<function> \b\w+\b) (?P<args> (?: \s*\S+ )* )? \s* %\}$
+        tag_pattern = compile(r"""
+            \{% \s*                             # open tag
+            (?P<function> \b \w+ \b)            # function name
+            (?P<args> (?: \s* [\w\.\+\-]+ )* )? # function arguments
+            \s* %\}                             # close tag
         """, VERBOSE)
-        argPattern = compile(r"""
-            -? (?= [1-9]|0(?!\d) ) \d+ (?:\.\d+)? (?:[eE] [+-]? \d+)?
+        arg_pattern = compile(r"""
+            -?                                  # negative sign
+            (?= [1-9]|0(?!\d) )                 # digits or zero before decimal
+            \d+                                 # pre-decimal digits
+            (?: \.                              # decimal
+            \d+ )?                              # post-decimal digits
+            (?:[eE] [+-]? \d+)?                 # scientific notation
         """, VERBOSE)
 
         data = evaluate_json(
@@ -81,17 +100,3 @@ class DummyDataCommand(TextCommand):
         f.set_scratch(True)
         f.set_name('results.json')
         f.insert(edit, 0, dumps(data, indent=4, separators=(',', ': ')))
-
-
-
-
-
-    # print(dumps(bytes('"a string with \\"double quotes\\""', "utf-8").decode("unicode_escape")))
-
-   #   (?P<number>   -? (?= [1-9]|0(?!\d) ) \d+ (?:\.\d+)? (?:[eE] [+-]? \d+)? )
-   # | (?P<boolean>  true | false | null )
-   # | (?P<string>   " (?:[^"\\]* | \\ ["\\bfnrt\/] | \\ u [0-9a-f]{4} )* (?<!\\ \\ \\) " )
-   # | (?P<array>    \[ (?: (?P=json)  (?: , (?P=json)  )*  )?  \s* \] )
-   # | (?P<pair>     \s* (?P=string) \s* : (?P=json)  )
-   # | (?P<object>   \{  (?:  (?P=pair)  (?: , (?P=pair)  )*  )?  \s* \} )
-   # | (?P<json>     \s* (?: (?P=number) | (?P=boolean) | (?P=string) | (?P=array) | (?P=object) ) \s* )

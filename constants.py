@@ -346,7 +346,7 @@ LAST_NAMES = [
     'Kinnaman',
     'Imamoglu',
     'Hurd',
-    "Fre'de'ric",
+    'Fredexric',
     'Rhoades',
     'Chiogna',
     'Perali',
