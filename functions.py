@@ -2,7 +2,6 @@ from abc import ABCMeta, abstractmethod
 
 from random import randint, getrandbits, uniform, choice
 
-from DummyData.dummy_data import DDException
 from DummyData.constants import (
     CITIES,
     STATES,
@@ -12,10 +11,7 @@ from DummyData.constants import (
     FIRST_NAMES,
     LAST_NAMES,
 )
-
-
-class DDFunctionException(DDException):
-    pass
+from DummyData.exceptions import DDFunctionException
 
 
 def integer(*args):
