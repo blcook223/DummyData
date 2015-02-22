@@ -50,7 +50,7 @@ def evaluate_json(json, allow_function=False):
         for k in json:
             match = TAG_PATTERN.search(k)
             if match:
-                evaluated[call_function(match)] = evaluate_json(json.pop(k))
+                evaluated[str(call_function(match))] = evaluate_json(json.pop(k))
             else:
                 evaluated[k] = evaluate_json(json[k])
         return evaluated
