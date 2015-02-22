@@ -9,10 +9,13 @@ from DummyData.evaluators import evaluate_json
 
 
 class GenerateDummyDataCommand(TextCommand):
+    """
+    Generate dummy data based on the current model.
+    """
 
     def run(self, edit):
         """
-        Generate new dummy file based on the current template.
+        Generate new dummy file based on the current model.
         """
         data = evaluate_json(
             loads(self.view.substr(Region(0, self.view.size())))
@@ -22,22 +25,67 @@ class GenerateDummyDataCommand(TextCommand):
         f.set_name('results.json')
         f.insert(edit, 0, dumps(data, indent=4, separators=(',', ': ')))
 
+    def description(self):
+        """
+        Return a description of the command.
+        """
+        return (
+            'Generate a new JSON file based on the currently open DummyData '
+            'model'
+        )
 
-class NewDummyDataTemplateCommand(WindowCommand):
+    def is_visible(self):
+        """
+        Return true if current view is a JSON file.
+        """
+        try:
+            file_name = os.path.basename(self.view.file_name())
+        except AttributeError:
+            file_name = self.view.name()
+        file_ext = file_name.split('.')[-1]
+        syntax = self.view.settings().get('syntax')
+        return (
+            'JSON' in syntax
+            or 'Plain text' in syntax
+            or file_ext == 'json'
+        )
+
+
+class NewDummyDataModelCommand(WindowCommand):
+    """
+    Create a new model.
+    """
+
+    class PopulateDummyDataTemplate(TextCommand):
+        """
+        Populate the open view with a template model.
+        """
+
+        def run(self, edit):
+            """
+            Populate the open view with a template model.
+            """
+            v = active_window().active_view()
+            path = os.path.join(packages_path(), 'DummyData', 'template.json')
+            f = open(path, 'r') # TODO: fix this so it will work for other package locations
+            v.insert(edit, 0, f.read())
+            f.close()
+
     def run(self):
-        f = self.window.new_file()
-        f.set_scratch(True)
-        f.set_name('new_dummy_data.json')
-        self.window.focus_view(f)
+        """
+        Open a new file and populate it with a template.
+        """
+        view = self.window.new_file()
+        view.set_scratch(True)
+        view.set_syntax_file('Packages/JavaScript/JSON.tmLanguage')
+        view.set_name('dummy_data_model.json')
+        self.window.focus_view(view)
         self.window.run_command('populate_dummy_data_template')
 
+    def description(self):
+        """
+        Return a description of the command.
+        """
+        return 'Create a new template for a JSON DummyData model.'
 
-class PopulateDummyDataTemplate(TextCommand):
-    def run(self, edit):
-        v = active_window().active_view()
-        if os.path.isfile(os.path.join(packages_path(), 'DummyData', 'template.json')):
-            f = open(os.path.join(packages_path(), 'DummyData', 'template.json'), 'r')
-        elif os.path.isfile(os.path.join(installed_packages_path(), 'DummyData', 'template.json')):
-            f = open(os.path.join(installed_packages_path(), 'DummyData', 'template.json'), 'r')
-        v.insert(edit, 0, f.read())
-        f.close()
+# TODO: add threading support
