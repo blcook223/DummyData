@@ -10,7 +10,7 @@
         "market share": "{% number 0 100 2 %}"
     },
     "staff": [
-        "{% repeat 1000 %}",
+        "{% repeat 10 %}",
         {
             "first name": "{% first_name %}",
             "last name": "{% last_name %}",
