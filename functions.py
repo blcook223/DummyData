@@ -2,7 +2,7 @@ from abc import ABCMeta, abstractmethod
 
 from random import randint, getrandbits, uniform, choice
 
-from DummyData.constants import (
+from .constants import (
     CITIES,
     STATES,
     STREETS,
@@ -11,7 +11,7 @@ from DummyData.constants import (
     FIRST_NAMES,
     LAST_NAMES,
 )
-from DummyData.exceptions import DDFunctionException
+from .exceptions import DDFunctionException
 
 
 def integer(*args):

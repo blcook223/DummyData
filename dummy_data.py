@@ -5,7 +5,7 @@ from json import loads, dumps
 from sublime import Region, active_window, packages_path, installed_packages_path
 from sublime_plugin import TextCommand, WindowCommand
 
-from DummyData.evaluators import evaluate_json
+from .evaluators import evaluate_json
 
 
 class GenerateDummyDataCommand(TextCommand):
@@ -20,10 +20,11 @@ class GenerateDummyDataCommand(TextCommand):
         data = evaluate_json(
             loads(self.view.substr(Region(0, self.view.size())))
         )
-        f = active_window().new_file()
-        f.set_scratch(True)
-        f.set_name('results.json')
-        f.insert(edit, 0, dumps(data, indent=4, separators=(',', ': ')))
+        v = active_window().new_file()
+        v.set_scratch(True)
+        v.set_syntax_file('Packages/JavaScript/JSON.tmLanguage')
+        v.set_name('results.json')
+        v.insert(edit, 0, dumps(data, indent=4, separators=(',', ': ')))
 
     def description(self):
         """
@@ -75,11 +76,11 @@ class NewDummyDataModelCommand(WindowCommand):
         """
         Open a new file and populate it with a template.
         """
-        view = self.window.new_file()
-        view.set_scratch(True)
-        view.set_syntax_file('Packages/JavaScript/JSON.tmLanguage')
-        view.set_name('dummy_data_model.json')
-        self.window.focus_view(view)
+        v = self.window.new_file()
+        v.set_scratch(True)
+        v.set_syntax_file('Packages/JavaScript/JSON.tmLanguage')
+        v.set_name('dummy_data_model.json')
+        self.window.focus_view(v)
         self.window.run_command('populate_dummy_data_template')
 
     def description(self):

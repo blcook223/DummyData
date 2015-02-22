@@ -1,7 +1,7 @@
 from re import compile, VERBOSE, sub
 
-from DummyData import functions
-from DummyData.exceptions import DDEvaluatorException
+from . import functions
+from .exceptions import DDEvaluatorException
 
 
 TAG_PATTERN = compile(r"""
