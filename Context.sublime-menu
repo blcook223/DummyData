@@ -1,0 +1,8 @@
+[
+    {
+        "caption": "Generate DummyData",
+        "mnemonic": "g",
+        "id": "generate_dummy_data",
+        "command": "generate_dummy_data"
+    }
+]

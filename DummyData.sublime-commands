@@ -1,0 +1,4 @@
+[
+    { "caption": "DummyData: New Model", "command": "new_dummy_data_model" },
+    { "caption": "DummyData: Generate DummyData", "command": "generate_dummy_data" }
+]
