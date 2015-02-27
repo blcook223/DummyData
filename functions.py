@@ -1,4 +1,6 @@
-from abc import ABCMeta, abstractmethod
+"""
+Functions used by evaluators to produce dummy data.
+"""
 
 from random import randint, getrandbits, uniform, choice
 
@@ -78,7 +80,7 @@ def phone(*args):
     return ''.join(
         [
             '(', str(integer(100, 999)), ') ',
-            str(integer(100, 999)), '-', str(integer(1000,9999))
+            str(integer(100, 999)), '-', str(integer(1000, 9999))
         ]
     )
 
@@ -222,12 +224,10 @@ def email(*args):
 
 def random(*args):
     """
-    Return a function that will choose from list items.
+    Return a random arg or a function that will choose from list items.
     """
     if args:
-        raise DDFunctionException(
-            'random function does not accept args, %d given' % len(args)
-        )
+        return choice(args)
 
     def evaluate_random(array, evaluator):
         """
@@ -253,7 +253,7 @@ def repeat(*args):
         Repeat the array the given number of times.
         """
         evaluated = []
-        for x in range(0, int(args[0])):
+        for _ in range(0, int(args[0])):
             evaluated.append(evaluator(array[0]))
         return evaluated
 

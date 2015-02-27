@@ -1,3 +1,7 @@
+"""
+Constant lists of entities to be used by DummyData functions.
+"""
+
 CITIES = [
     'Plano',
     'St. Paul',

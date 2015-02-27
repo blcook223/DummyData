@@ -1,25 +1,38 @@
-from re import compile, VERBOSE, sub
+"""
+Evaluators to produce dummy data from DummyData models.
+"""
+
+import re
 
 from . import functions
 from .exceptions import DDEvaluatorException
 
 
-TAG_PATTERN = compile(r"""
+TAG_PATTERN = re.compile(r"""
     \{% \s*                             # open tag
     (?P<function> \b \w+ \b)            # function name
-    (?P<args> (?: \s* [\w\.\+\-]+ )* )? # function arguments
+    (?P<args>                           # function arguments
+    (?: \s*                             # separated by white-space
+    [\w\.\+\-\\\"\/]+ )* )?             # non-white-space, allowed characters
     \s* %\}                             # close tag
-""", VERBOSE)
+""", re.VERBOSE)
 
 
-ARG_PATTERN = compile(r"""
+ARG_PATTERN = re.compile(r"""
     -?                                  # negative sign
     (?= [1-9]|0(?!\d) )                 # digits or zero before decimal
     \d+                                 # pre-decimal digits
     (?: \.                              # decimal
     \d+ )?                              # post-decimal digits
     (?:[eE] [+-]? \d+)?                 # scientific notation
-""", VERBOSE)
+    |                                   # alternately
+    "                                   # begin quote
+    (?:[^"\\]                           # non-control characters
+    | \\ ["\\bfnrt\/]                   # escaped characters
+    | \\ u [0-9a-f]{4}                  # Unicode characters
+    | \\\\ \\\" )*?                     # double-escaped quotation mark
+    "                                   # end quote
+""", re.VERBOSE)
 
 
 def evaluate_json(json, allow_function=False):
@@ -32,6 +45,7 @@ def evaluate_json(json, allow_function=False):
         Call matched function.
         """
         args = ARG_PATTERN.findall(match.group('args'))
+        args = [x[1:-1] if x[0] == '"' and x[-1] == '"' else x for x in args]
         value = getattr(functions, match.group('function'))(*args)
         if hasattr(json, '__call__') and not allow_function:
             raise DDEvaluatorException(
@@ -50,7 +64,7 @@ def evaluate_json(json, allow_function=False):
         for k in json:
             match = TAG_PATTERN.search(k)
             if match:
-                evaluated[str(call_function(match))] = evaluate_json(json.pop(k))
+                evaluated[str(call_function(match))] = evaluate_json(json[k])
             else:
                 evaluated[k] = evaluate_json(json[k])
         return evaluated
@@ -74,7 +88,7 @@ def evaluate_json(json, allow_function=False):
         evaluated = evaluate_array(json)
     elif type(json) is str:
         try:
-            evaluated = sub(TAG_PATTERN, call_function, json)
+            evaluated = re.sub(TAG_PATTERN, call_function, json)
         except TypeError:
             # function returned a type other than string
             evaluated = call_function(TAG_PATTERN.search(json))

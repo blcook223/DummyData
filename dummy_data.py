@@ -1,11 +1,28 @@
+"""
+Basic DummyData commands
+"""
+
 import os
 
 from json import loads, dumps
 
-from sublime import Region, active_window, packages_path, installed_packages_path
+from sublime import Region, active_window, packages_path
 from sublime_plugin import TextCommand, WindowCommand
 
 from .evaluators import evaluate_json
+
+
+TEMPLATE = (
+    '{\n\t"organization":{\n\t\t"name":"{% company %}",\n\t\t"address1": "{% i'
+    'nteger 1000 9999 %} {% street %}",\n\t\t"address2":"{% city %}, {% state '
+    '%} {% postal %}",\n\t\t"country":"{% country %}",\n\t\t"website":"{% url '
+    '%}",\n\t\t"mission":"{% sentence %}",\n\t\t"description":"{% paragraph %}'
+    '",\n\t\t"market share":"{% number 0 100 2 %}"\n\t},\n\t"staff":[\n\t\t"{%'
+    ' repeat 10 %}",\n\t\t{\n\t\t\t"first name":"{% first_name %}",\n\t\t\t"la'
+    'st name":"{% last_name %}",\n\t\t\t"email":"{% email %}",\n\t\t\t"phone n'
+    'umber":"{% phone %}",\n\t\t\t"part-time":"{% boolean %}",\n\t\t\t"departm'
+    'ent":["{% random %}","Facilities","Sales","IT"]\n\t\t}\n\t]\n}'
+)
 
 
 class GenerateDummyDataCommand(TextCommand):
@@ -20,11 +37,11 @@ class GenerateDummyDataCommand(TextCommand):
         data = evaluate_json(
             loads(self.view.substr(Region(0, self.view.size())))
         )
-        v = active_window().new_file()
-        v.set_scratch(True)
-        v.set_syntax_file('Packages/JavaScript/JSON.tmLanguage')
-        v.set_name('results.json')
-        v.insert(edit, 0, dumps(data, indent=4, separators=(',', ': ')))
+        new_view = active_window().new_file()
+        new_view.set_scratch(True)
+        new_view.set_syntax_file('Packages/JavaScript/JSON.tmLanguage')
+        new_view.set_name('results.json')
+        new_view.insert(edit, 0, dumps(data, indent=4, separators=(',', ': ')))
 
     def description(self):
         """
@@ -52,36 +69,41 @@ class GenerateDummyDataCommand(TextCommand):
         )
 
 
+class PopulateDummyDataTemplate(TextCommand):
+    """
+    Populate the open view with a template model.
+    """
+
+    def run(self, edit):
+        """
+        Populate the open view with a template model.
+        """
+        self.view.insert(edit, 0, TEMPLATE)
+
+    def is_visible(self):
+        """
+        Command used internally; always return false
+        """
+        return false
+
+
 class NewDummyDataModelCommand(WindowCommand):
     """
     Create a new model.
     """
 
-    class PopulateDummyDataTemplate(TextCommand):
-        """
-        Populate the open view with a template model.
-        """
-
-        def run(self, edit):
-            """
-            Populate the open view with a template model.
-            """
-            v = active_window().active_view()
-            path = os.path.join(packages_path(), 'DummyData', 'template.json')
-            f = open(path, 'r') # TODO: fix this so it will work for other package locations
-            v.insert(edit, 0, f.read())
-            f.close()
-
     def run(self):
         """
         Open a new file and populate it with a template.
         """
-        v = self.window.new_file()
-        v.set_scratch(True)
-        v.set_syntax_file('Packages/JavaScript/JSON.tmLanguage')
-        v.set_name('dummy_data_model.json')
-        self.window.focus_view(v)
-        self.window.run_command('populate_dummy_data_template')
+        new_view = self.window.new_file()
+        new_view.set_scratch(True)
+        new_view.set_syntax_file('Packages/JavaScript/JSON.tmLanguage')
+        new_view.set_name('dummy_data_model.json')
+        self.window.focus_view(new_view)
+        active_window().active_view().run_command(
+            'populate_dummy_data_template'
+        )
 
     def description(self):
         """
@@ -89,4 +111,5 @@ class NewDummyDataModelCommand(WindowCommand):
         """
         return 'Create a new template for a JSON DummyData model.'
 
-# TODO: add threading support
+# TODO: add threading support?
+# TODO: messaging/logging
