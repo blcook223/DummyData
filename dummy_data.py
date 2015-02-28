@@ -6,7 +6,7 @@ import os
 
 from json import loads, dumps
 
-from sublime import Region, active_window, packages_path
+from sublime import Region, active_window
 from sublime_plugin import TextCommand, WindowCommand
 
 from .evaluators import evaluate_json
@@ -85,7 +85,7 @@ class PopulateDummyDataTemplate(TextCommand):
         """
         Command used internally; always return false
         """
-        return false
+        return False
 
 
 class NewDummyDataModelCommand(WindowCommand):
@@ -118,5 +118,4 @@ class NewDummyDataModelCommand(WindowCommand):
 # date
 # time
 
-# TODO: reorganize virtualenv stuff, add virtualenvwrapper, ipython, make exportable, pylint, sublime and sublime_plugin
-# sublime files in /Applications/Sublime Text.app/Contents/MacOS
+# TODO: pylint

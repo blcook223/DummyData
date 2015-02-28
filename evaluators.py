@@ -35,7 +35,7 @@ ARG_PATTERN = re.compile(r"""
 """, re.VERBOSE)
 
 
-def evaluate_json(json, allow_callable=False, index=None):
+def evaluate_json(json, allow_callable=False, iteration=None):
     """
     Traverse parsed JSON data and evaluate tags.
     """
@@ -46,7 +46,10 @@ def evaluate_json(json, allow_callable=False, index=None):
         """
         args = ARG_PATTERN.findall(match.group('args'))
         args = [x[1:-1] if x[0] == '"' and x[-1] == '"' else x for x in args]
-        value = getattr(functions, match.group('function'))(*args, index=index)
+        value = getattr(
+            functions,
+            match.group('function')
+        )(*args, iteration=iteration)
         if hasattr(json, '__call__') and not allow_callable:
             raise DDEvaluatorException(
                 'function %s called from illegal location'
@@ -65,10 +68,10 @@ def evaluate_json(json, allow_callable=False, index=None):
             match = TAG_PATTERN.search(k)
             if match:
                 evaluated[
-                    evaluate_json(k, index=index)
-                ] = evaluate_json(json[k], index=index)
+                    evaluate_json(k, iteration=iteration)
+                ] = evaluate_json(json[k], iteration=iteration)
             else:
-                evaluated[k] = evaluate_json(json[k], index=index)
+                evaluated[k] = evaluate_json(json[k], iteration=iteration)
         return evaluated
 
     def evaluate_array(json):
@@ -81,13 +84,13 @@ def evaluate_json(json, allow_callable=False, index=None):
                 evaluate_json(
                     json[0],
                     allow_callable=True,
-                    index=index
+                    iteration=iteration
                 )
             )
             if hasattr(evaluated[0], '__call__'):
                 return evaluated[0](json[1:], evaluate_json)
             for val in json[1:]:
-                evaluated.append(evaluate_json(val, index=index))
+                evaluated.append(evaluate_json(val, iteration=iteration))
         return evaluated
 
     if isinstance(json, dict):
