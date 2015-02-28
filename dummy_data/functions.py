@@ -5,7 +5,7 @@ Functions used by evaluators to produce dummy data.
 import re
 from random import randint, getrandbits, uniform, choice
 
-from .constants import (
+from dummy_data.constants import (
     CITIES,
     STATES,
     STREETS,
@@ -14,7 +14,7 @@ from .constants import (
     FIRST_NAMES,
     LAST_NAMES,
 )
-from .exceptions import DDFunctionException
+from dummy_data.exceptions import DDFunctionException
 
 
 INDEX_TAG_PATTERN = re.compile(r"""

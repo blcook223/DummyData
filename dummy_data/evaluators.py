@@ -4,8 +4,8 @@ Evaluators to produce dummy data from DummyData models.
 
 import re
 
-from . import functions
-from .exceptions import DDEvaluatorException
+from dummy_data import functions
+from dummy_data.exceptions import DDEvaluatorException
 
 
 TAG_PATTERN = re.compile(r"""
