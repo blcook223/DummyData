@@ -1,3 +1,6 @@
+# virtualenv
+venv/
+
 # Vagrant
 .vagrant/
 Vagrantfile
