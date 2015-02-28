@@ -35,7 +35,7 @@ ARG_PATTERN = re.compile(r"""
 """, re.VERBOSE)
 
 
-def evaluate_json(json, allow_function=False):
+def evaluate_json(json, allow_callable=False, index=None):
     """
     Traverse parsed JSON data and evaluate tags.
     """
@@ -46,8 +46,8 @@ def evaluate_json(json, allow_function=False):
         """
         args = ARG_PATTERN.findall(match.group('args'))
         args = [x[1:-1] if x[0] == '"' and x[-1] == '"' else x for x in args]
-        value = getattr(functions, match.group('function'))(*args)
-        if hasattr(json, '__call__') and not allow_function:
+        value = getattr(functions, match.group('function'))(*args, index=index)
+        if hasattr(json, '__call__') and not allow_callable:
             raise DDEvaluatorException(
                 'function %s called from illegal location'
                 % match.group('function')
@@ -64,9 +64,11 @@ def evaluate_json(json, allow_function=False):
         for k in json:
             match = TAG_PATTERN.search(k)
             if match:
-                evaluated[str(call_function(match))] = evaluate_json(json[k])
+                evaluated[
+                    evaluate_json(k, index=index)
+                ] = evaluate_json(json[k], index=index)
             else:
-                evaluated[k] = evaluate_json(json[k])
+                evaluated[k] = evaluate_json(json[k], index=index)
         return evaluated
 
     def evaluate_array(json):
@@ -75,21 +77,26 @@ def evaluate_json(json, allow_function=False):
         """
         evaluated = []
         if json:
-            evaluated.append(evaluate_json(json[0], True))
+            evaluated.append(
+                evaluate_json(
+                    json[0],
+                    allow_callable=True,
+                    index=index
+                )
+            )
             if hasattr(evaluated[0], '__call__'):
                 return evaluated[0](json[1:], evaluate_json)
             for val in json[1:]:
-                evaluated.append(evaluate_json(val))
+                evaluated.append(evaluate_json(val, index=index))
         return evaluated
 
-    if type(json) is dict:
-        evaluated = evaluate_object(json)
-    elif type(json) is list:
-        evaluated = evaluate_array(json)
-    elif type(json) is str:
+    if isinstance(json, dict):
+        return evaluate_object(json)
+    elif isinstance(json, list):
+        return evaluate_array(json)
+    elif isinstance(json, str):
         try:
-            evaluated = re.sub(TAG_PATTERN, call_function, json)
+            return re.sub(TAG_PATTERN, call_function, json)
         except TypeError:
             # function returned a type other than string
-            evaluated = call_function(TAG_PATTERN.search(json))
-    return evaluated
+            return call_function(TAG_PATTERN.search(json))

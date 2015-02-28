@@ -2,6 +2,7 @@
 Functions used by evaluators to produce dummy data.
 """
 
+import re
 from random import randint, getrandbits, uniform, choice
 
 from .constants import (
@@ -16,7 +17,14 @@ from .constants import (
 from .exceptions import DDFunctionException
 
 
-def integer(*args):
+INDEX_TAG_PATTERN = re.compile(r"""
+    \{% \s*                             # open tag
+    index                               # function name
+    \s* %\}                             # close tag
+""", re.VERBOSE)
+
+
+def integer(*args, index=None):
     """
     Return random integer between parameter min a max.
     """
@@ -30,7 +38,7 @@ def integer(*args):
     return randint(0, 1)
 
 
-def number(*args):
+def number(*args, index=None):
     """
     Return random float between parameter min a max.
     """
@@ -47,7 +55,7 @@ def number(*args):
     return uniform(0, 1)
 
 
-def boolean(*args):
+def boolean(*args, index=None):
     """
     Return random boolean.
     """
@@ -58,7 +66,7 @@ def boolean(*args):
     return bool(getrandbits(1))
 
 
-def postal(*args):
+def postal(*args, index=None):
     """
     Return a random postal code.
     """
@@ -69,7 +77,7 @@ def postal(*args):
     return str(integer(10000, 99999))
 
 
-def phone(*args):
+def phone(*args, index=None):
     """
     Return a random phone number.
     """
@@ -85,7 +93,7 @@ def phone(*args):
     )
 
 
-def paragraph(*args):
+def paragraph(*args, index=None):
     """
     Return a paragraph of text.
     """
@@ -104,7 +112,7 @@ def paragraph(*args):
     )
 
 
-def sentence(*args):
+def sentence(*args, index=None):
     """
     Return a paragraph of text.
     """
@@ -118,7 +126,7 @@ def sentence(*args):
     )
 
 
-def city(*args):
+def city(*args, index=None):
     """
     Return a random city.
     """
@@ -129,7 +137,7 @@ def city(*args):
     return choice(CITIES)
 
 
-def state(*args):
+def state(*args, index=None):
     """
     Return a random state.
     """
@@ -140,7 +148,7 @@ def state(*args):
     return choice(STATES)
 
 
-def street(*args):
+def street(*args, index=None):
     """
     Return a random street name.
     """
@@ -151,7 +159,7 @@ def street(*args):
     return choice(STREETS)
 
 
-def country(*args):
+def country(*args, index=None):
     """
     Return a random country name.
     """
@@ -162,7 +170,7 @@ def country(*args):
     return choice(COUNTRIES)
 
 
-def company(*args):
+def company(*args, index=None):
     """
     Return a random company name.
     """
@@ -173,7 +181,7 @@ def company(*args):
     return choice(COMPANIES)
 
 
-def url(*args):
+def url(*args, index=None):
     """
     Return a random URL.
     """
@@ -184,7 +192,7 @@ def url(*args):
     return ''.join(['http://www.', company().lower(), '.com/'])
 
 
-def first_name(*args):
+def first_name(*args, index=None):
     """
     Return a random first name.
     """
@@ -195,7 +203,7 @@ def first_name(*args):
     return choice(FIRST_NAMES)
 
 
-def last_name(*args):
+def last_name(*args, index=None):
     """
     Return a random last name.
     """
@@ -206,7 +214,7 @@ def last_name(*args):
     return choice(LAST_NAMES)
 
 
-def email(*args):
+def email(*args, index=None):
     """
     Return a random email address.
     """
@@ -222,9 +230,9 @@ def email(*args):
     )
 
 
-def random(*args):
+def random(*args, index=None):
     """
-    Return a random arg or a function that will choose from list items.
+    Return a random arg or a random selection function.
     """
     if args:
         return choice(args)
@@ -233,12 +241,12 @@ def random(*args):
         """
         Choose from among items in the array.
         """
-        return evaluator(choice(array))
+        return evaluator(choice(array), index)
 
     return evaluate_random
 
 
-def repeat(*args):
+def repeat(*args, index=None):
     """
     Return a function that will repeat a list.
     """
@@ -252,9 +260,21 @@ def repeat(*args):
         """
         Repeat the array the given number of times.
         """
+
         evaluated = []
-        for _ in range(0, int(args[0])):
-            evaluated.append(evaluator(array[0]))
+        for num in range(0, int(args[0])):
+            evaluated.append(evaluator(array[0], index=num))
         return evaluated
 
     return evaluate_repeat
+
+
+def index(*args, index):
+    """
+    Return index value if currently in repeat structure.
+    """
+    if index is None:
+        raise DDFunctionException(
+            'index function called outside of repeat function structure'
+        )
+    return index

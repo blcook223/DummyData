@@ -18,10 +18,11 @@ TEMPLATE = (
     '%} {% postal %}",\n\t\t"country":"{% country %}",\n\t\t"website":"{% url '
     '%}",\n\t\t"mission":"{% sentence %}",\n\t\t"description":"{% paragraph %}'
     '",\n\t\t"market share":"{% number 0 100 2 %}"\n\t},\n\t"staff":[\n\t\t"{%'
-    ' repeat 10 %}",\n\t\t{\n\t\t\t"first name":"{% first_name %}",\n\t\t\t"la'
-    'st name":"{% last_name %}",\n\t\t\t"email":"{% email %}",\n\t\t\t"phone n'
-    'umber":"{% phone %}",\n\t\t\t"part-time":"{% boolean %}",\n\t\t\t"departm'
-    'ent":["{% random %}","Facilities","Sales","IT"]\n\t\t}\n\t]\n}'
+    ' repeat 10 %}",\n\t\t{\n\t\t\t"employee ID":"{% index %}",\n\t\t\t"first '
+    'name":"{% first_name %}",\n\t\t\t"last name":"{% last_name %}",\n\t\t\t"e'
+    'mail":"{% email %}",\n\t\t\t"phone number":"{% phone %}",\n\t\t\t"part-ti'
+    'me":"{% boolean %}",\n\t\t\t"department":["{% random %}","Facilities","Sa'
+    'les","IT"]\n\t\t}\n\t]\n}'
 )
 
 
@@ -111,5 +112,11 @@ class NewDummyDataModelCommand(WindowCommand):
         """
         return 'Create a new template for a JSON DummyData model.'
 
-# TODO: add threading support?
 # TODO: messaging/logging
+
+# TODO: implement these with and without args
+# date
+# time
+
+# TODO: reorganize virtualenv stuff, add virtualenvwrapper, ipython, make exportable, pylint, sublime and sublime_plugin
+# sublime files in /Applications/Sublime Text.app/Contents/MacOS
