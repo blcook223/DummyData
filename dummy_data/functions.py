@@ -24,7 +24,7 @@ INDEX_TAG_PATTERN = re.compile(r"""
 """, re.VERBOSE)
 
 
-def integer(*args, iteration=None):
+def integer(*args, **_):
     """
     Return random integer between parameter min a max.
     """
@@ -38,7 +38,7 @@ def integer(*args, iteration=None):
     return randint(0, 1)
 
 
-def number(*args, iteration=None):
+def number(*args, **_):
     """
     Return random float between parameter min a max.
     """
@@ -55,7 +55,7 @@ def number(*args, iteration=None):
     return uniform(0, 1)
 
 
-def boolean(*args, iteration=None):
+def boolean(*args, **_):
     """
     Return random boolean.
     """
@@ -66,7 +66,7 @@ def boolean(*args, iteration=None):
     return bool(getrandbits(1))
 
 
-def postal(*args, iteration=None):
+def postal(*args, **_):
     """
     Return a random postal code.
     """
@@ -77,7 +77,7 @@ def postal(*args, iteration=None):
     return str(integer(10000, 99999))
 
 
-def phone(*args, iteration=None):
+def phone(*args, **_):
     """
     Return a random phone number.
     """
@@ -93,7 +93,7 @@ def phone(*args, iteration=None):
     )
 
 
-def paragraph(*args, iteration=None):
+def paragraph(*args, **_):
     """
     Return a paragraph of text.
     """
@@ -112,7 +112,7 @@ def paragraph(*args, iteration=None):
     )
 
 
-def sentence(*args, iteration=None):
+def sentence(*args, **_):
     """
     Return a paragraph of text.
     """
@@ -126,7 +126,7 @@ def sentence(*args, iteration=None):
     )
 
 
-def city(*args, iteration=None):
+def city(*args, **_):
     """
     Return a random city.
     """
@@ -137,7 +137,7 @@ def city(*args, iteration=None):
     return choice(CITIES)
 
 
-def state(*args, iteration=None):
+def state(*args, **_):
     """
     Return a random state.
     """
@@ -148,7 +148,7 @@ def state(*args, iteration=None):
     return choice(STATES)
 
 
-def street(*args, iteration=None):
+def street(*args, **_):
     """
     Return a random street name.
     """
@@ -159,7 +159,7 @@ def street(*args, iteration=None):
     return choice(STREETS)
 
 
-def country(*args, iteration=None):
+def country(*args, **_):
     """
     Return a random country name.
     """
@@ -170,7 +170,7 @@ def country(*args, iteration=None):
     return choice(COUNTRIES)
 
 
-def company(*args, iteration=None):
+def company(*args, **_):
     """
     Return a random company name.
     """
@@ -181,7 +181,7 @@ def company(*args, iteration=None):
     return choice(COMPANIES)
 
 
-def url(*args, iteration=None):
+def url(*args, **_):
     """
     Return a random URL.
     """
@@ -192,7 +192,7 @@ def url(*args, iteration=None):
     return ''.join(['http://www.', company().lower(), '.com/'])
 
 
-def first_name(*args, iteration=None):
+def first_name(*args, **_):
     """
     Return a random first name.
     """
@@ -203,7 +203,7 @@ def first_name(*args, iteration=None):
     return choice(FIRST_NAMES)
 
 
-def last_name(*args, iteration=None):
+def last_name(*args, **_):
     """
     Return a random last name.
     """
@@ -214,7 +214,7 @@ def last_name(*args, iteration=None):
     return choice(LAST_NAMES)
 
 
-def email(*args, iteration=None):
+def email(*args, **_):
     """
     Return a random email address.
     """
@@ -246,7 +246,7 @@ def random(*args, iteration=None):
     return evaluate_random
 
 
-def repeat(*args, iteration=None):
+def repeat(*args, **_):
     """
     Return a function that will repeat a list.
     """

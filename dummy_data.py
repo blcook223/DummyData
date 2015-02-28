@@ -117,5 +117,3 @@ class NewDummyDataModelCommand(WindowCommand):
 # TODO: implement these with and without args
 # date
 # time
-
-# TODO: pylint
