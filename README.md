@@ -8,7 +8,7 @@ Turn this:
 
 Into this:
 
-![screenshot of Sublime Text editor with open dummy data results file](/docs/images/resuls.png)
+![screenshot of Sublime Text editor with open dummy data results file](/docs/images/results.png)
 
 
 ## How to Use DummyData
