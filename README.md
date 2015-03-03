@@ -47,15 +47,15 @@ This command becomes available when editing a JSON file. It can be accessed via 
 
 ## DummyData Functions
 
-- `{% integer [min], [max] %}`
+### `{% integer [min], [max] %}`
 
 The `integer` function returns a random integer between the `min` and `max` values inclusive. If no arguments are provided, `integer` randomly returns either `0` or `1`.
 
-- `{% number [min], [max], [decimals] %}`
+### `{% number [min], [max], [decimals] %}`
 
 The `number` function returns a random floating decimal point number between the `min` and `max` values inclusive. If no arguments are provided, `number` returns a random number between `0` and `1`. If `decimals` is specified, the function will return a number with the specified maximum number of digits after the decimal point.
 
-- `{% date [start], [end] %}`
+### `{% date [start], [end] %}`
 
 The `date` function will return a random date in the format `MM/DD/YYYY` between the specified start and end dates. If no arguments are supplied, `date` will return today's date. The `start` and `end` arguments must be in `MM/DD/YYYY` format. For example, any of the following are valid:
 
@@ -64,14 +64,14 @@ The `date` function will return a random date in the format `MM/DD/YYYY` between
     * `01/1/2015`
     * `1/01/2015`
 
-- `{% time [start], [end] %}`
+### `{% time [start], [end] %}`
 
 The `time` function will return a random time in the format `HH:IIAP` between the specified start and end times. If no arguments are supplied, `time` will return the current system time. The `start` and `end` arguments must be in `HH:IIAP` format. For example, both of the following are valid:
 
 * `10:00AM`
 * `9:59AM`
 
-- `{% random [arg1], [arg2], ... [argn] %}`
+### `{% random [arg1], [arg2], ... [argn] %}`
 
 The `random` argument randomly selects from a set of provided arguments. There are two ways to use the `random` function:
 
@@ -87,7 +87,7 @@ If string arguments are supplied, `random` will randomly select from the argumen
 
 If no arguments are supplied, the `{% random %}` tag must be the first element in an array. The `random` function will then choose randomly from among the JSON entities supplied in the rest of the list.
 
-- `{% repeat [times] %}`
+### `{% repeat [times] %}`
 
 The `repeat` function generates an array of JSON entities following a specified structure. The `{% repeat %}` tag must be the first element in a JSON array. For example, the `repeat` function could be used in a DummyData model as follows:
 
@@ -121,66 +121,66 @@ This model would produce something similar to the following:
         }
     ]
 
-- `{% index %}`
+### `{% index %}`
 
 The `index` function returns an integer indicating the iteration of a `repeat` function. The `index` function can only be used within a `repeat` structure (see above).
 
-- `{% boolean %}`
+### `{% boolean %}`
 
 The `boolean` function returns a random `true` or `false` value.
 
-- `{% postal %}`
+### `{% postal %}`
 
 The `postal` function returns a random five-digit postal code.
 
-- `{% {% phone %}`
+### `{% {% phone %}`
 
 The `phone` function returns a random ten-digit phone number in this format: `(XXX) XXX-XXXX`.
 
-- `{% paragraph %}`
+### `{% paragraph %}`
 
 The `paragraph` function returns a paragraph of "lorem ipsum" text.
 
-- `{% sentence %}`
+### `{% sentence %}`
 
 The `sentence` function returns a sentence of "lorem ipsum" text.
 
-- `{% city %}`
+### `{% city %}`
 
 The `city` function returns a random city name.
 
-- `{% state %}`
+### `{% state %}`
 
 The `state` function returns a random US state name.
 
-- `{% street %}`
+### `{% street %}`
 
 The `street` function returns a random street name.
 
-- `{% country %}`
+### `{% country %}`
 
 The `country` function returns a random country name.
 
-- `{% company %}`
+### `{% company %}`
 
 The `company` function returns a random, fictional company name.
 
-- `{% first_name %}`
+### `{% first_name %}`
 
 The `first_name` function returns a random first name.
 
-- `{% last_name %}`
+### `{% last_name %}`
 
 The `last_name` function returns a random last name.
 
-- `{% uid %}`
+### `{% uid %}`
 
 The `uid` function will return a random, unique string of characters.
 
-- `{% url %}`
+### `{% url %}`
 
 The `url` function will return a random, fictional URL.
 
-- `{% email %}`
+### `{% email %}`
 
 The `email` function will return a random, fictional email address.
