@@ -19,11 +19,11 @@ To see how DummyData works, try the following:
 
 1. Open a new file, and type the following:
 
-    {
-        "an integer": "{% integer 1 10 %}",
-        "true or false": "{% boolean %}",
-        "random selection": "{% random \"first string\" \"second string\" %}"
-    }
+        {
+            "an integer": "{% integer 1 10 %}",
+            "true or false": "{% boolean %}",
+            "random selection": "{% random \"first string\" \"second string\" %}"
+        }
 
 2. Right click, and select "Generate DummyData".
 
