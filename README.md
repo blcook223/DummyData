@@ -101,7 +101,7 @@ If no arguments are supplied, the `{% random %}` tag must be the first element i
 
 `{% repeat [times] %}`
 
-The `repeat` function generates an array of JSON entities following a specified structure. The `{% repeat %}` tag must be the first element in a JSON array. For example, the `repeat` function could be used in a DummyData model as follows:
+The `repeat` function generates an array of JSON entities following a specified structure. The `{% repeat %}` tag must be the first element in an array. For example, the `repeat` function could be used in a DummyData model as follows:
 
     [
         "{% repeat 6 %}",
