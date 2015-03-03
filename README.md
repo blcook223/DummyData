@@ -59,10 +59,10 @@ The `number` function returns a random floating decimal point number between the
 
 The `date` function will return a random date in the format `MM/DD/YYYY` between the specified start and end dates. If no arguments are supplied, `date` will return today's date. The `start` and `end` arguments must be in `MM/DD/YYYY` format. For example, any of the following are valid:
 
-* `01/01/2015`
-* `1/1/2015`
-* `01/1/2015`
-* `1/01/2015`
+    * `01/01/2015`
+    * `1/1/2015`
+    * `01/1/2015`
+    * `1/01/2015`
 
 - `{% time [start], [end] %}`
 
