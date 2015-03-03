@@ -1,3 +1,6 @@
+# MacOS folder files
+.DS_Store
+
 # virtualenv
 venv/
 
