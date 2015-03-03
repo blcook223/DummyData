@@ -2,23 +2,25 @@
 Basic DummyData commands
 """
 
-import os
-
+from os import path
 from json import loads, dumps
 
-from sublime import Region, active_window
+from sublime import Region, active_window, status_message, error_message
 from sublime_plugin import TextCommand, WindowCommand
 
+from .exceptions import DDEvaluatorException, DDFunctionException
 from .evaluators import evaluate_json
 
 
 TEMPLATE = (
-    '{\n\t"organization":{\n\t\t"name":"{% company %}",\n\t\t"address1": "{% i'
-    'nteger 1000 9999 %} {% street %}",\n\t\t"address2":"{% city %}, {% state '
-    '%} {% postal %}",\n\t\t"country":"{% country %}",\n\t\t"website":"{% url '
-    '%}",\n\t\t"mission":"{% sentence %}",\n\t\t"description":"{% paragraph %}'
-    '",\n\t\t"market share":"{% number 0 100 2 %}"\n\t},\n\t"staff":[\n\t\t"{%'
-    ' repeat 10 %}",\n\t\t{\n\t\t\t"employee ID":"{% index %}",\n\t\t\t"first '
+    '{\n\t"organization":{\n\t\t"name":"{% company %}",\n\t\t"address1":"{% in'
+    'teger 1000 9999 %} {% street %}",\n\t\t"address2":"{% city %}, {% state %'
+    '} {% postal %}",\n\t\t"country":"{% country %}",\n\t\t"website":"{% url %'
+    '}",\n\t\t"mission":"{% sentence %}",\n\t\t"description":"{% paragraph %}"'
+    ',\n\t\t"market share":"{% number 0 100 2 %}"\n\t},\n\t"staff":[\n\t\t"{% '
+    'repeat 10 %}",\n\t\t{\n\t\t\t"hire date":"{% date 01/01/1970 01/01/2015 %'
+    '}",\n\t\t\t"shift start time":"{% time 7:00AM 10:00AM %}",\n\t\t\t"ID car'
+    'd number":"{% uid %}",\n\t\t\t"employee ID":"{% index %}",\n\t\t\t"first '
     'name":"{% first_name %}",\n\t\t\t"last name":"{% last_name %}",\n\t\t\t"e'
     'mail":"{% email %}",\n\t\t\t"phone number":"{% phone %}",\n\t\t\t"part-ti'
     'me":"{% boolean %}",\n\t\t\t"department":["{% random %}","Facilities","Sa'
@@ -35,14 +37,23 @@ class GenerateDummyDataCommand(TextCommand):
         """
         Generate new dummy file based on the current model.
         """
-        data = evaluate_json(
-            loads(self.view.substr(Region(0, self.view.size())))
-        )
+        status_message('Generating DummyData...')
+
+        try:
+            data = evaluate_json(
+                loads(self.view.substr(Region(0, self.view.size())))
+            )
+        except (DDFunctionException, DDEvaluatorException) as error:
+            error_message('DummyData encountered an error: %s' % error.args[0])
+            status_message('DummyData not generated')
+            return
+        text = dumps(data, indent=4, separators=(',', ': '))
         new_view = active_window().new_file()
         new_view.set_scratch(True)
         new_view.set_syntax_file('Packages/JavaScript/JSON.tmLanguage')
         new_view.set_name('results.json')
-        new_view.insert(edit, 0, dumps(data, indent=4, separators=(',', ': ')))
+        status_message('DummyData generated')
+        new_view.insert(edit, 0, text)
 
     def description(self):
         """
@@ -58,7 +69,7 @@ class GenerateDummyDataCommand(TextCommand):
         Return true if current view is a JSON file.
         """
         try:
-            file_name = os.path.basename(self.view.file_name())
+            file_name = path.basename(self.view.file_name())
         except AttributeError:
             file_name = self.view.name()
         file_ext = file_name.split('.')[-1]
@@ -111,9 +122,3 @@ class NewDummyDataModelCommand(WindowCommand):
         Return a description of the command.
         """
         return 'Create a new template for a JSON DummyData model.'
-
-# TODO: messaging/logging
-
-# TODO: implement these with and without args
-# date
-# time
