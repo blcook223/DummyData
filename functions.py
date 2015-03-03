@@ -243,7 +243,7 @@ def random(*args, iteration=None):
     Return a random arg or a random selection function.
     """
     if args:
-        return choice(args)
+        return str(choice(args))
 
     def evaluate_random(array, evaluator):
         """
@@ -313,8 +313,20 @@ def date(*args, **_):
             'date function does not except %d arg(s)' % length
         )
     if args:
-        start = datetime.strptime(args[0], '%m/%d/%Y')
-        end = datetime.strptime(args[1], '%m/%d/%Y')
+        try:
+            start = datetime.strptime(args[0], '%m/%d/%Y')
+        except ValueError:
+            # invalid date
+            raise DDFunctionException(
+                'argument %s supplied to date function is invalid' % args[0]
+            )
+        try:
+            end = datetime.strptime(args[1], '%m/%d/%Y')
+        except ValueError:
+            # invalid date
+            raise DDFunctionException(
+                'argument %s supplied to date function is invalid' % args[1]
+            )
         delta = end - start
         days = randint(0, delta.days)
         return_date = start + timedelta(days=days)

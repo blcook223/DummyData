@@ -50,7 +50,7 @@ ARG_PATTERN = re.compile(r"""
     \/(?:0?[1-9]                        # days 0-9
     |[12][0-9]                          # days 10-29
     |3[01])                             # days 30-31
-    \/\d{1,4})                          # year
+    \/\d{4})                            # year
     (?!\S)                              # do not allow non-white-space
 """, re.VERBOSE)
 
