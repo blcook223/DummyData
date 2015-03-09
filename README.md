@@ -15,9 +15,9 @@ Into this:
 
 ### Installing DummyData
 
-DummyData is available through [Package Control](https://packagecontrol.io/).
-
 To install manually, execute the command `git clone https://github.com/blcook223/DummyData.git` in your Sublime Text `Packages` directory.
+
+Availability through [Package Control](https://packagecontrol.io/) is pending.
 
 ### Getting Started
 
