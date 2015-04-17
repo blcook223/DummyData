@@ -1,13 +1,6 @@
 # MacOS folder files
 .DS_Store
 
-# virtualenv
-venv/
-
-# Vagrant
-.vagrant/
-Vagrantfile
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
