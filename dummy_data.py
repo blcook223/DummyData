@@ -4,6 +4,7 @@ Basic DummyData commands
 
 from os import path
 from json import loads, dumps
+from collections import OrderedDict
 
 from sublime import Region, active_window, status_message, error_message
 from sublime_plugin import TextCommand, WindowCommand
@@ -41,7 +42,7 @@ class GenerateDummyDataCommand(TextCommand):
 
         try:
             data = evaluate_json(
-                loads(self.view.substr(Region(0, self.view.size())))
+                loads(self.view.substr(Region(0, self.view.size())), object_pairs_hook=OrderedDict)
             )
         except (DDFunctionException, DDEvaluatorException) as error:
             error_message('DummyData encountered an error: %s' % error.args[0])

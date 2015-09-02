@@ -3,6 +3,7 @@ Evaluators to produce dummy data from DummyData models.
 """
 
 import re
+from collections import OrderedDict
 
 from . import functions
 from .exceptions import DDEvaluatorException
@@ -89,7 +90,7 @@ def evaluate_json(json, allow_callable=False, iteration=None):
         """
         Evaluate tags in parsed JSON object.
         """
-        evaluated = {}
+        evaluated = OrderedDict()
         for k in json:
             evaluated[
                 evaluate_json(k, iteration=iteration)
