@@ -4,7 +4,7 @@ Functions used by evaluators to produce dummy data.
 
 import re
 from uuid import uuid4
-from datetime import datetime, timedelta, date as dt
+from datetime import datetime as dttm, timedelta
 from random import randint, getrandbits, uniform, choice
 
 from .constants import (
@@ -26,6 +26,9 @@ INDEX_TAG_PATTERN = re.compile(r"""
 """, re.VERBOSE)
 
 
+NON_ZERO_PADDED_TIME_PATTERN = re.compile(r'\d:\d{2}(?:A|P)M', re.VERBOSE)
+
+
 def integer(*args, **_):
     """
     Return random integer between parameter min a max.
@@ -33,7 +36,7 @@ def integer(*args, **_):
     length = len(args)
     if length != 0 and length != 2:
         raise DDFunctionException(
-            'integer function does not except %d arg(s)' % length
+            'integer function does not except {0} arg(s)'.format(length)
         )
     if args:
         return randint(int(args[0]), int(args[1]))
@@ -47,7 +50,7 @@ def number(*args, **_):
     length = len(args)
     if length < 0 or length > 3 or length == 1:
         raise DDFunctionException(
-            'number function does not except %d arg(s)' % length
+            'number function does not except {0} arg(s)'.format(length)
         )
 
     if args:
@@ -63,7 +66,7 @@ def boolean(*args, **_):
     """
     if args:
         raise DDFunctionException(
-            'boolean function does not accept args, %d given' % len(args)
+            'boolean function does not accept args, {0} given'.format(len(args))
         )
     return bool(getrandbits(1))
 
@@ -74,7 +77,7 @@ def postal(*args, **_):
     """
     if args:
         raise DDFunctionException(
-            'postal function does not accept args, %d given' % len(args)
+            'postal function does not accept args, {0} given'.format(len(args))
         )
     return str(integer(10000, 99999))
 
@@ -85,7 +88,7 @@ def phone(*args, **_):
     """
     if args:
         raise DDFunctionException(
-            'phone function does not accept args, %d given' % len(args)
+            'phone function does not accept args, {0} given'.format(len(args))
         )
     return ''.join(
         [
@@ -101,7 +104,7 @@ def paragraph(*args, **_):
     """
     if args:
         raise DDFunctionException(
-            'paragraph function does not accept args, %d given' % len(args)
+            'paragraph function does not accept args, {0} given'.format(len(args))
         )
     return (
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do '
@@ -120,7 +123,7 @@ def sentence(*args, **_):
     """
     if args:
         raise DDFunctionException(
-            'sentence function does not accept args, %d given' % len(args)
+            'sentence function does not accept args, {0} given'.format(len(args))
         )
     return (
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do '
@@ -134,7 +137,7 @@ def city(*args, **_):
     """
     if args:
         raise DDFunctionException(
-            'city function does not accept args, %d given' % len(args)
+            'city function does not accept args, {0} given'.format(len(args))
         )
     return choice(CITIES)
 
@@ -145,7 +148,7 @@ def state(*args, **_):
     """
     if args:
         raise DDFunctionException(
-            'state function does not accept args, %d given' % len(args)
+            'state function does not accept args, {0} given'.format(len(args))
         )
     return choice(STATES)
 
@@ -156,7 +159,7 @@ def street(*args, **_):
     """
     if args:
         raise DDFunctionException(
-            'street function does not accept args, %d given' % len(args)
+            'street function does not accept args, {0} given'.format(len(args))
         )
     return choice(STREETS)
 
@@ -167,7 +170,7 @@ def country(*args, **_):
     """
     if args:
         raise DDFunctionException(
-            'country function does not accept args, %d given' % len(args)
+            'country function does not accept args, {0} given'.format(len(args))
         )
     return choice(COUNTRIES)
 
@@ -178,7 +181,7 @@ def company(*args, **_):
     """
     if args:
         raise DDFunctionException(
-            'company function does not accept args, %d given' % len(args)
+            'company function does not accept args, {0} given'.format(len(args))
         )
     return choice(COMPANIES)
 
@@ -189,7 +192,7 @@ def url(*args, **_):
     """
     if args:
         raise DDFunctionException(
-            'url function does not accept args, %d given' % len(args)
+            'url function does not accept args, {0} given'.format(len(args))
         )
     return ''.join(
         [
@@ -206,7 +209,7 @@ def first_name(*args, **_):
     """
     if args:
         raise DDFunctionException(
-            'first_name function does not accept args, %d given' % len(args)
+            'first_name function does not accept args, {0} given'.format(len(args))
         )
     return choice(FIRST_NAMES)
 
@@ -217,7 +220,7 @@ def last_name(*args, **_):
     """
     if args:
         raise DDFunctionException(
-            'last_name function does not accept args, %d given' % len(args)
+            'last_name function does not accept args, {0} given'.format(len(args))
         )
     return choice(LAST_NAMES)
 
@@ -228,7 +231,7 @@ def email(*args, **_):
     """
     if args:
         raise DDFunctionException(
-            'last_name function does not accept args, %d given' % len(args)
+            'last_name function does not accept args, {0} given'.format(len(args))
         )
     return ''.join(
         [
@@ -261,7 +264,7 @@ def repeat(*args, **_):
     length = len(args)
     if length != 1:
         raise DDFunctionException(
-            'repeat function requires 1 arg, %d given' % length
+            'repeat function requires 1 arg, {0} given'.format(length)
         )
 
     def evaluate_repeat(array, evaluator):
@@ -283,7 +286,7 @@ def index(*args, iteration):
     """
     if args:
         raise DDFunctionException(
-            'index function does not accept args, %d given' % len(args)
+            'index function does not accept args, {0} given'.format(len(args))
         )
     if iteration is None:
         raise DDFunctionException(
@@ -298,9 +301,56 @@ def uid(*args, **_):
     """
     if args:
         raise DDFunctionException(
-            'uid function does not accept args, %d given' % len(args)
+            'uid function does not accept args, {0} given'.format(len(args))
         )
     return str(uuid4())
+
+
+
+def datetime(*args, **_):
+    """
+    Return a random datetime between the parameter dates in
+    the parameter format.
+    """
+    length = len(args)
+    if length > 3:
+        raise DDFunctionException(
+            'datetime function does not accept {0} args'.format(length)
+        )
+    if length == 3 or length == 1:
+        frmt = args[0]
+    else:
+        frmt = '%m/%d/%Y %I:%M%p'
+    if length <= 1:
+        return dttm.now().strftime(frmt)
+    if length == 3:
+        start_input = args[1]
+        end_input = args[2]
+    else:
+        start_input = args[0]
+        end_input = args[1]
+    try:
+        start = dttm.strptime(start_input, frmt)
+    except ValueError:
+        # invalid datetime
+        raise DDFunctionException(
+            'argument {0} supplied to datetime function is invalid'.format(start_input)
+        )
+    try:
+        end = dttm.strptime(end_input, frmt)
+    except ValueError:
+        # invalid datetime
+        raise DDFunctionException(
+            'argument {0} supplied to datetime function is invalid'.format(end_input)
+        )
+    delta = end - start
+    if delta.total_seconds() < 0:
+        raise DDFunctionException(
+            'start datetime {0} is after end datetime {1}'.format(start_input, end_input)
+        )
+    seconds = randint(0, delta.total_seconds())
+    return_time = start + timedelta(seconds=seconds)
+    return return_time.strftime(frmt)
 
 
 def date(*args, **_):
@@ -308,30 +358,12 @@ def date(*args, **_):
     Return a random date between the parameter dates.
     """
     length = len(args)
-    if length != 0 and length != 2:
-        raise DDFunctionException(
-            'date function does not except %d arg(s)' % length
-        )
-    if args:
-        try:
-            start = datetime.strptime(args[0], '%m/%d/%Y')
-        except ValueError:
-            # invalid date
-            raise DDFunctionException(
-                'argument %s supplied to date function is invalid' % args[0]
-            )
-        try:
-            end = datetime.strptime(args[1], '%m/%d/%Y')
-        except ValueError:
-            # invalid date
-            raise DDFunctionException(
-                'argument %s supplied to date function is invalid' % args[1]
-            )
-        delta = end - start
-        days = randint(0, delta.days)
-        return_date = start + timedelta(days=days)
-        return return_date.strftime('%m/%d/%Y')
-    return dt.today().strftime('%m/%d/%Y')
+    args = list(args)
+    if length == 0:
+        args = ['%m/%d/%Y']
+    elif length == 2:
+        args.insert(0, '%m/%d/%Y')
+    return datetime(*args)
 
 
 def time(*args, **_):
@@ -339,15 +371,15 @@ def time(*args, **_):
     Return a random time between the parameter times.
     """
     length = len(args)
-    if length != 0 and length != 2:
-        raise DDFunctionException(
-            'time function does not except %d arg(s)' % length
-        )
-    if args:
-        start = datetime.strptime(args[0], '%I:%M%p')
-        end = datetime.strptime(args[1], '%I:%M%p')
-        delta = end - start
-        seconds = randint(0, delta.seconds)
-        return_time = start + timedelta(seconds=seconds)
-        return return_time.strftime('%I:%M%p')
-    return datetime.now().strftime('%I:%M%p')
+    args = list(args)
+    if length == 0:
+        args = ['%I:%M%p']
+    elif length == 2:
+        args.insert(0, '%I:%M%p')
+
+        # allow non-zero padded hours for backward compatibility
+        if re.match(NON_ZERO_PADDED_TIME_PATTERN, args[1]):
+            args[1] = '0{0}'.format(args[1])
+        if re.match(NON_ZERO_PADDED_TIME_PATTERN, args[2]):
+            args[2] = '0{0}'.format(args[2])
+    return datetime(*args)

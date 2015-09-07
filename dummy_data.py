@@ -45,7 +45,7 @@ class GenerateDummyDataCommand(TextCommand):
                 loads(self.view.substr(Region(0, self.view.size())), object_pairs_hook=OrderedDict)
             )
         except (DDFunctionException, DDEvaluatorException) as error:
-            error_message('DummyData encountered an error: %s' % error.args[0])
+            error_message('DummyData encountered an error: {0}'.format(error.args[0]))
             status_message('DummyData not generated')
             return
         text = dumps(data, indent=4, separators=(',', ': '))

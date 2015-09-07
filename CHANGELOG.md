@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased][unreleased]
 ### Changed
 - Sequence of properties in model is preserved in generated data for easier viewing and comparing.
+- Added `datetime` function
+- Added support for a format string parameter for `date` and `time` functions
 
 ## [0.1.0] - 2015-03-01
 ### Added

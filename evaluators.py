@@ -14,7 +14,7 @@ TAG_PATTERN = re.compile(r"""
     (?P<function> \b \w+ \b)            # function name
     (?P<args>                           # function arguments
     (?: \s*                             # separated by white-space
-    [\w\.\+\-\\\"\/:]+ )* )?            # non-white-space, allowed characters
+    [^\s]+ )* )?                        # non-white-space, allowed characters
     \s* %\}                             # close tag
 """, re.VERBOSE)
 
@@ -74,13 +74,15 @@ def evaluate_json(json, allow_callable=False, iteration=None):
             )(*args, iteration=iteration)
         except AttributeError:
             raise DDEvaluatorException(
-                'attempted call to non-existent function %s'
-                % match.group('function')
+                'attempted call to non-existent function {0}'.format(
+                    match.group('function')
+                )
             )
         if hasattr(json, '__call__') and not allow_callable:
             raise DDEvaluatorException(
-                'function %s called from illegal location'
-                % match.group('function')
+                'function {0} called from illegal location'.format(
+                    match.group('function')
+                )
             )
         if match.start() != 0 or match.end() != len(match.string):
             value = str(value)

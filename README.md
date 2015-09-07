@@ -65,25 +65,25 @@ The `integer` function returns a random integer between the `min` and `max` valu
 
 The `number` function returns a random floating decimal point number between the `min` and `max` values inclusive. If no arguments are provided, `number` returns a random number between `0` and `1`. If `decimals` is specified, the function will return a number with the specified maximum number of digits after the decimal point.
 
+### datetime
+
+`{% datetime [format], [start], [end] %}`
+
+The `datetime` function will return a random date and time in the given format between the specified start and end datetimes. If no arguments are supplied, `datetime` will return the current date and time. See [Python datetime documentation](https://docs.python.org/2/library/datetime.html#strftime-strptime-behavior) for details on date formatting. If no format is given, input and output dates must be in `'%m/%d/%Y %I:%M%p'` format.
+
 ### date
 
-`{% date [start], [end] %}`
+`{% date [format], [start], [end] %}`
 
-The `date` function will return a random date in the format `MM/DD/YYYY` between the specified start and end dates. If no arguments are supplied, `date` will return today's date. The `start` and `end` arguments must be in `MM/DD/YYYY` format. For example, any of the following are valid:
-
-* `01/01/2015`
-* `1/1/2015`
-* `01/1/2015`
-* `1/01/2015`
+The `date` function will return a random date in the given format between the specified start and end dates. If no arguments are supplied, `date` will return today's date. See [Python datetime documentation](https://docs.python.org/2/library/datetime.html#strftime-strptime-behavior) for details on date formatting. If no format is given, input and output dates must be in `'%m/%d/%Y'` format.
 
 ### time
 
-`{% time [start], [end] %}`
+`{% time [format], [start], [end] %}`
 
-The `time` function will return a random time in the format `HH:IIAP` between the specified start and end times. If no arguments are supplied, `time` will return the current system time. The `start` and `end` arguments must be in `HH:IIAP` format. For example, both of the following are valid:
+The `time` function will return a random time in the given format between the specified start and end times. If no arguments are supplied, `time` will return the current system time. See [Python datetime documentation](https://docs.python.org/2/library/datetime.html#strftime-strptime-behavior) for details on date formatting. If no format is given, input and output dates must be in `'%I:%M%p'` format.
 
-* `10:00AM`
-* `9:59AM`
+For backwards compatibility, when no format is given, the `time` function supports hours without zero-padding.
 
 ### random
 
