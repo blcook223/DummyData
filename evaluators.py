@@ -14,7 +14,7 @@ TAG_PATTERN = re.compile(r"""
     (?P<function> \b \w+ \b)            # function name
     (?P<args>                           # function arguments
     (?: \s*                             # separated by white-space
-    [^\s]+ )* )?                        # non-white-space, allowed characters
+    [^\s]+ )*? )?                       # non-white-space, allowed characters
     \s* %\}                             # close tag
 """, re.VERBOSE)
 
@@ -104,18 +104,26 @@ def evaluate_json(json, allow_callable=False, iteration=None):
         Evaluate tags in parsed JSON array.
         """
         evaluated = []
-        if json:
-            evaluated.append(
-                evaluate_json(
-                    json[0],
-                    allow_callable=True,
-                    iteration=iteration
-                )
+        index = 0
+        while index < len(json):
+            item = evaluate_json(
+                json[index],
+                allow_callable=True,
+                iteration=iteration
             )
-            if hasattr(evaluated[0], '__call__'):
-                return evaluated[0](json[1:], evaluate_json)
-            for val in json[1:]:
-                evaluated.append(evaluate_json(val, iteration=iteration))
+            if hasattr(item, '__call__'):
+                if index + 1 >= len(json):
+                    raise DDEvaluatorException(
+                        'invalid use of {0} function at end of array'.format(item.parent_function)
+                    )
+                if 'repeat' == item.parent_function:
+                    evaluated.extend(item(json[index + 1], evaluate_json))
+                    index += 1
+                elif 'random' == item.parent_function:
+                    return item(json[index + 1:], evaluate_json)
+            else:
+                evaluated.append(item)
+            index += 1
         return evaluated
 
     if isinstance(json, dict):

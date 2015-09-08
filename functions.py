@@ -253,6 +253,7 @@ def random(*args, iteration=None):
         Choose from among items in the array.
         """
         return evaluator(choice(array), iteration)
+    evaluate_random.parent_function = 'random'
 
     return evaluate_random
 
@@ -267,15 +268,15 @@ def repeat(*args, **_):
             'repeat function requires 1 arg, {0} given'.format(length)
         )
 
-    def evaluate_repeat(array, evaluator):
+    def evaluate_repeat(item, evaluator):
         """
-        Repeat the array the given number of times.
+        Repeat the item the given number of times.
         """
-
         evaluated = []
         for num in range(0, int(args[0])):
-            evaluated.append(evaluator(array[0], iteration=num))
+            evaluated.append(evaluator(item, iteration=num))
         return evaluated
+    evaluate_repeat.parent_function = 'repeat'
 
     return evaluate_repeat
 
