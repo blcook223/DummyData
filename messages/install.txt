@@ -1,0 +1,24 @@
+DummyData
+=========
+
+Thanks for installing DummyData, the Sublime Text plugin that lets you quickly and repeatedly generate JSON data files!
+
+
+Getting Started
+---------------
+
+In Sublime Text, bring up the command prompt by pressing Ctrl+Shift+P (Cmd+Shift+P on Mac). Then, search for "DD" and select "DummyData: New Model."
+
+This will create a DummyData model file, which you can modify or save for use in your projects. The model file includes function tags enclosed within curly braces and percent signs (e.g., "{% repeat 10 %}", "{% url %}", "{% boolean %}"). DummyData supports many functions; see the documentation here:
+
+https://github.com/blcook223/DummyData/blob/master/README.md
+
+With the DummyData model open, bring up the command prompt again. This time, select "DummyData: Generate DummyData." This will create a new JSON file following the structure of the model file. The function tags have been replaced with randomly generated data.
+
+
+Bugs and Feature Requests
+-------------------------
+
+If you find a bug or would like a new feature to be included, please let me know here:
+
+https://github.com/blcook223/DummyData/issues

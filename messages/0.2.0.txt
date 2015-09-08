@@ -1,0 +1,60 @@
+DummyData - 0.2.0
+=================
+
+Thanks for upgrading DummyData, the Sublime Text plugin that lets you quickly and repeatedly generate JSON data files!
+
+
+What's New?
+-----------
+
+### `datetime` function
+
+The `datetime` function supports generating a date and time together. It accepts an optional first argument specifying a format using the Python strftime format (https://docs.python.org/2/library/datetime.html#strftime-and-strptime-behavior).
+
+For example, this model:
+
+    "{% datetime \"%Y-%m-%d %I:%M%p\" \"2015-09-08 08:00AM\" \"2015-09-08 09:00AM\" %}"
+
+Might generate these data:
+
+    "2015-09-08 08:43AM"
+
+
+### Format for `date` and `time` functions
+
+The `date` and `time` functions now support format strings as an optional second parameter.
+
+
+### `repeat` function
+
+Multiple "{% repeat %}" tags can be used in a single array.
+
+For example, this model:
+
+    [
+        "{% repeat 2 %}",
+        "first item",
+        "{% repeat 3 %}",
+        "second item",
+        "third item"
+    ]
+
+Would generate these data:
+
+    [
+        "first item",
+        "first item",
+        "second item",
+        "second item",
+        "second item",
+        "third item"
+    ]
+
+
+
+Bugs and Feature Requests
+-------------------------
+
+As always, if you find a bug or would like a new feature to be included, please let me know here:
+
+https://github.com/blcook223/DummyData/issues
