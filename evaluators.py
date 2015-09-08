@@ -41,17 +41,7 @@ ARG_PATTERN = re.compile(r"""
     (?!\S)                              # do not allow non-white-space
     |
     (?<!\S)                             # do not allow non-white-space
-    (?:0?[1-9]|1[012])                  # hours
-    :[0-5][0-9]                         # minutes
-    (?:AM|PM)                           # AM or PM
-    (?!\S)                              # do not allow non-white-space
-    |
-    (?<!\S)                             # do not allow non-white-space
-    (?:(?:0?[1-9]|1[012])               # months
-    \/(?:0?[1-9]                        # days 0-9
-    |[12][0-9]                          # days 10-29
-    |3[01])                             # days 30-31
-    \/\d{4})                            # year
+    (?:[^"\\\s])+?                      # unenclosed string without white-space
     (?!\S)                              # do not allow non-white-space
 """, re.VERBOSE)
 
