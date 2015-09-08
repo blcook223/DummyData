@@ -2,6 +2,7 @@
 Exceptions used by DummyData
 """
 
+
 class DDException(Exception):
     """
     Base DummyData exception

@@ -66,7 +66,9 @@ def boolean(*args, **_):
     """
     if args:
         raise DDFunctionException(
-            'boolean function does not accept args, {0} given'.format(len(args))
+            'boolean function does not accept args, {0} given'.format(
+                len(args)
+            )
         )
     return bool(getrandbits(1))
 
@@ -104,7 +106,9 @@ def paragraph(*args, **_):
     """
     if args:
         raise DDFunctionException(
-            'paragraph function does not accept args, {0} given'.format(len(args))
+            'paragraph function does not accept args, {0} given'.format(
+                len(args)
+            )
         )
     return (
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do '
@@ -123,7 +127,9 @@ def sentence(*args, **_):
     """
     if args:
         raise DDFunctionException(
-            'sentence function does not accept args, {0} given'.format(len(args))
+            'sentence function does not accept args, {0} given'.format(
+                len(args)
+            )
         )
     return (
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do '
@@ -170,7 +176,9 @@ def country(*args, **_):
     """
     if args:
         raise DDFunctionException(
-            'country function does not accept args, {0} given'.format(len(args))
+            'country function does not accept args, {0} given'.format(
+                len(args)
+            )
         )
     return choice(COUNTRIES)
 
@@ -181,7 +189,9 @@ def company(*args, **_):
     """
     if args:
         raise DDFunctionException(
-            'company function does not accept args, {0} given'.format(len(args))
+            'company function does not accept args, {0} given'.format(
+                len(args)
+            )
         )
     return choice(COMPANIES)
 
@@ -209,7 +219,9 @@ def first_name(*args, **_):
     """
     if args:
         raise DDFunctionException(
-            'first_name function does not accept args, {0} given'.format(len(args))
+            'first_name function does not accept args, {0} given'.format(
+                len(args)
+            )
         )
     return choice(FIRST_NAMES)
 
@@ -220,7 +232,9 @@ def last_name(*args, **_):
     """
     if args:
         raise DDFunctionException(
-            'last_name function does not accept args, {0} given'.format(len(args))
+            'last_name function does not accept args, {0} given'.format(
+                len(args)
+            )
         )
     return choice(LAST_NAMES)
 
@@ -231,7 +245,9 @@ def email(*args, **_):
     """
     if args:
         raise DDFunctionException(
-            'last_name function does not accept args, {0} given'.format(len(args))
+            'last_name function does not accept args, {0} given'.format(
+                len(args)
+            )
         )
     return ''.join(
         [
@@ -307,7 +323,6 @@ def uid(*args, **_):
     return str(uuid4())
 
 
-
 def datetime(*args, **_):
     """
     Return a random datetime between the parameter dates in
@@ -335,19 +350,26 @@ def datetime(*args, **_):
     except ValueError:
         # invalid datetime
         raise DDFunctionException(
-            'argument {0} supplied to datetime function is invalid'.format(start_input)
+            'argument {0} supplied to datetime function is invalid'.format(
+                start_input
+            )
         )
     try:
         end = dttm.strptime(end_input, frmt)
     except ValueError:
         # invalid datetime
         raise DDFunctionException(
-            'argument {0} supplied to datetime function is invalid'.format(end_input)
+            'argument {0} supplied to datetime function is invalid'.format(
+                end_input
+            )
         )
     delta = end - start
     if delta.total_seconds() < 0:
         raise DDFunctionException(
-            'start datetime {0} is after end datetime {1}'.format(start_input, end_input)
+            'start datetime {0} is after end datetime {1}'.format(
+                start_input,
+                end_input
+            )
         )
     seconds = randint(0, delta.total_seconds())
     return_time = start + timedelta(seconds=seconds)

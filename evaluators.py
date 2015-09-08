@@ -114,7 +114,9 @@ def evaluate_json(json, allow_callable=False, iteration=None):
             if hasattr(item, '__call__'):
                 if index + 1 >= len(json):
                     raise DDEvaluatorException(
-                        'invalid use of {0} function at end of array'.format(item.parent_function)
+                        'invalid use of {0} function at end of array'.format(
+                            item.parent_function
+                        )
                     )
                 if 'repeat' == item.parent_function:
                     evaluated.extend(item(json[index + 1], evaluate_json))
