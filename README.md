@@ -4,11 +4,11 @@ A Sublime Text plugin for generating dummy JSON data.
 
 Turn this:
 
-![screenshot of Sublime Text editor with open dummy data model file](assets/model.jpg)
+![screenshot of Sublime Text editor with open dummy data model file](https://raw.githubusercontent.com/blcook223/DummyData/develop/assets/model.jpg)
 
 Into this:
 
-![screenshot of Sublime Text editor with open dummy data results file](assets/results.jpg)
+![screenshot of Sublime Text editor with open dummy data results file](https://raw.githubusercontent.com/blcook223/DummyData/develop/assets/results.jpg)
 
 
 ## How to Use DummyData
