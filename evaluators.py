@@ -128,3 +128,4 @@ def evaluate_json(json, allow_callable=False, iteration=None):
         except TypeError:
             # function returned a type other than string
             return call_function(TAG_PATTERN.search(json))
+    return json
