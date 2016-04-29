@@ -1,25 +1,30 @@
 [
     {
         "caption": "Tools",
-        "mnemonic": "t",
         "id": "tools",
         "children": [
             {
-                "caption": "DummyData",
-                "mnemonic": "d",
-                "id": "dummy_data",
+                "id": "packages",
+                "caption": "Packages",
                 "children": [
                     {
-                        "caption": "New DummyData Model",
-                        "mnemonic": "m",
-                        "id": "new_dummy_data_model",
-                        "command": "new_dummy_data_model"
-                    },
-                    {
-                        "caption": "Generate DummyData",
-                        "mnemonic": "g",
-                        "id": "generate_dummy_data",
-                        "command": "generate_dummy_data"
+                        "caption": "DummyData",
+                        "mnemonic": "d",
+                        "id": "dummy_data",
+                        "children": [
+                            {
+                                "caption": "New DummyData Model",
+                                "mnemonic": "m",
+                                "id": "new_dummy_data_model",
+                                "command": "new_dummy_data_model"
+                            },
+                            {
+                                "caption": "Generate DummyData",
+                                "mnemonic": "g",
+                                "id": "generate_dummy_data",
+                                "command": "generate_dummy_data"
+                            }
+                        ]
                     }
                 ]
             }
